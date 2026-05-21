@@ -209,18 +209,22 @@ async function runAgent(userPrompt: string) {
       const finalAnswer = action.replace(/Finish\[(.+)\]/, '$1').trim();
       console.log(`任务完成，最终答案: ${finalAnswer}`);
       break;
-    } else if (action.startsWith('调用工具:')) {
-      // 调用工具：解析工具名和参数
-      const toolCallMatch = action.match(/调用工具: (\w+)\((.+)\)/);
+    } else {
+      // 尝试解析工具调用：兼容「调用工具: func(args)」和「func(args)」两种格式
+      // 先移除可能的「调用工具:」前缀
+      const cleanAction = action.replace(/^调用工具:\s*/, '').trim();
+      const toolCallMatch = cleanAction.match(/^(\w+)\((.+)\)$/);
       if (!toolCallMatch) {
-        observation = '错误:工具调用格式不合法，请按指定格式调用';
+        observation = '错误:工具调用格式不合法，请使用 function_name(arg="value") 或 Finish[答案] 格式';
       } else {
-        const [_, toolName, argsStr] = toolCallMatch;
+        const [, toolName, argsStr] = toolCallMatch;
         // 解析参数（如 city="北京" → { city: "北京" }）
         const args: Record<string, string> = {};
         argsStr.split(',').forEach((arg) => {
           const [key, value] = arg.trim().split('=');
-          args[key] = value.replace(/"/g, ''); // 去除引号
+          if (key && value) {
+            args[key] = value.replace(/"/g, ''); // 去除引号
+          }
         });
 
         // 调用工具
@@ -232,8 +236,6 @@ async function runAgent(userPrompt: string) {
           observation = `错误:未定义的工具 ${toolName}`;
         }
       }
-    } else {
-      observation = '错误:Action 格式不合法，请使用「调用工具」或「Finish」格式';
     }
 
     // 3. 记录 Observation 到对话历史
