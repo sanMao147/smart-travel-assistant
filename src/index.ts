@@ -195,7 +195,8 @@ async function runAgent(userPrompt: string) {
     console.log(`模型输出:\n${llmOutput}\n`);
 
     // 1. 提取 Thought-Action 对（清理多余内容）
-    const thoughtActionMatch = llmOutput.match(/Thought: (.+?)\nAction: (.+)/s);
+    // [^\n]+ 限定 Action 为单行，防止 LLM 一次输出多对 Thought-Action 时贪婪匹配吞掉后续内容
+    const thoughtActionMatch = llmOutput.match(/Thought: ([\s\S]+?)\nAction: ([^\n]+)/);
     if (!thoughtActionMatch) {
       console.log('未解析到合法的 Thought-Action 对，结束循环');
       break;
