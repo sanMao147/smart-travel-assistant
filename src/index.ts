@@ -1,6 +1,6 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-import { TavilyClient } from '@tavily/core';
+import { tavily } from '@tavily/core';
 import * as readline from 'readline';
 
 // 加载环境变量
@@ -48,13 +48,12 @@ async function getAttraction(city: string, weather: string): Promise<string> {
 
   try {
     // 初始化 Tavily 客户端
-    const tavily = new TavilyClient({ apiKey });
+    const client = tavily({ apiKey });
     // 构造搜索查询
     const query = `${city} 在${weather}天气下最值得去的旅游景点推荐及理由`;
 
     // 调用 Tavily API
-    const response = await tavily.search({
-      query,
+    const response = await client.search(query, {
       searchDepth: 'basic',
       includeAnswer: true,
     });
@@ -96,7 +95,7 @@ class DeepSeekClient {
 
   constructor(model: string = 'deepseek-chat') {
     this.apiKey = process.env.DEEPSEEK_API_KEY || '';
-    this.baseUrl = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1';
+    this.baseUrl = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com';
     this.model = model;
 
     // 验证密钥
