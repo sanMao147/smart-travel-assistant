@@ -182,7 +182,7 @@ async function runAgent(userPrompt: string) {
   console.log(`用户输入: ${userPrompt}\n${'-'.repeat(48)}`);
 
   // 最大循环次数（防止无限循环）
-  const maxIterations = 5;
+  const maxIterations = 4;
 
   for (let i = 0; i < maxIterations; i++) {
     console.log(`\n--- 循环 ${i + 1} ---\n`);
