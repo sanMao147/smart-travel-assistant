@@ -23,11 +23,18 @@
 
 ## 架构概览
 
-```
-用户输入 → runAgent 主循环 → DeepSeekClient LLM 层 → 解析 Thought-Action
-                                                    ├── Finish → 输出最终答案
-                                                    └── 调用工具 → getWeather / getAttraction
-                                                              → Observation 记录 → 返回主循环
+```mermaid
+flowchart TD
+    A[用户输入] --> B[runAgent 主循环]
+    B --> C[DeepSeekClient LLM 层]
+    C --> D{解析 Thought-Action}
+    D -->|Finish| E[输出最终答案]
+    D -->|调用工具| F[工具层]
+    F --> G[getWeather: wttr.in API]
+    F --> H[getAttraction: Tavily API]
+    G --> I[Observation 记录]
+    H --> I
+    I --> B
 ```
 
 ### 关键设计
