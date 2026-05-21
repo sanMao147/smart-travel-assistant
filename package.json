@@ -1,0 +1,22 @@
+{
+  "name": "smart-travel-assistant",
+  "version": "1.0.0",
+  "description": "智能旅行助手 - 基于 TypeScript 的 Thought-Action-Observation 范式 Agent",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "npx ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "@tavily/core": "^0.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "@types/node": "^20.14.10",
+    "@types/axios": "^0.14.4",
+    "ts-node": "^10.9.2"
+  }
+}
